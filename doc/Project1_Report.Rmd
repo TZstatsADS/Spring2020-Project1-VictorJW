@@ -1,0 +1,68 @@
+---
+title: "Stories behind Eminem's lyrics"
+author: "Jiadong Wu"
+date: "2/2/2020"
+output: html_document
+---
+
+## Eminem: The Rap God
+Hip-Hop Changes. Eminem Doesn't.
+
+```{r load libraries, include = FALSE}
+library(tidyverse)
+library(wordcloud2)
+library(tidytext)
+library(plotly)
+```
+
+```{r load data, warning=FALSE, message=FALSE}
+# load lyrics data
+load('../output/processed_lyrics.RData') 
+```
+
+```{r data preprocess}
+eminem <- dt_lyrics %>% 
+  filter(artist == 'eminem')
+```
+
+## Prolific Producer
+```{r}
+g1 <- eminem %>% 
+  group_by(year) %>% 
+  summarise(num = n())
+
+g1 %>% 
+  ggplot() +
+  geom_bar(aes(x = year, y = num),fill = 'orange', stat = 'identity') +
+  labs(x = 'Year',
+       y = 'Number of Song Released',
+       title = 'Song Release Analysis') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5)) 
+```
+
+## Word Frequency
+```{r}
+word_alltime <- eminem %>% 
+  mutate(token = str_split(stemmedwords, ' ')) %>% 
+  unnest() %>% 
+  count(token, name = 'frequency') %>% 
+  arrange(desc(frequency)) %>% 
+  head(30)
+
+ggplot(word_alltime, aes(x=token, y=frequency, fill=token)) + 
+  geom_bar(width = 0.75,  stat = "identity", colour = "black", size = 1) +
+  coord_polar(theta = "x") + 
+  xlab("") + 
+  ylab("") + 
+  ggtitle("Word Frequency") +
+  theme(legend.position = "none") + 
+  labs(x = NULL, y = NULL)
+
+```
+
+## Word Cloud2
+```{r}
+wordcloud2(word_alltime, fontFamily = 'sans')
+```
+
