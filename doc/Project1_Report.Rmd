@@ -63,7 +63,7 @@ g1 %>%
 <br>
 **Unfortunately, Eminem is just like other rappers. The top three frequent words he uses are extremely rude. Why is that? Data analysis would no longer leads us to the truth. NPL and word frequency analysis are only capable to tell the story that just on the table. However, as a Hip-Hop fans, I could tell the reason. Most of rappers are from poor families, so does Eminem. A lot of Hip-Hop music is trying to reveal social injustice: race, gender, poverty, etc.** 
 <br>
-**Thus, rude words are attacking the social injustice, but Hip-Pop music is all about love and peace.**
+**Thus, rude words are attacking the social injustice, but Hip-Hop music is all about love and peace.**
 <br>
 ```{r fig.align='center', warning=FALSE}
 word_alltime <- eminem %>% 
@@ -89,7 +89,7 @@ ggplot(word_alltime, aes(x=token, y=frequency, fill=token)) +
 wordcloud2(word_alltime, color = 'random-light')
 ```
 
-## Hip-Pop Changes, Eminem Doesn't? Nope!
+## Hip-Hop Changes, Eminem Doesn't? Nope!
 **During this project, I did a couple of researches about Hip-Hop industry. I've also seen an article in NYtimes that said *Hip-Hop Changes, Eminem Doesn't.* This makes me a little bit curious that is it really true upon our word frequency analysis?**
 <br>
 **So I compared Eminem's words usage against the whole Hip-Hop industry words frequency by decades.**
@@ -118,7 +118,7 @@ timeless_hip %>%
 ```
 **As we can see on the above plots, Hip-Hop industry did experience a words usage shift from 1980's to 1990's. However, from 1990's up to now, the words that rappers frequently used are consistent which tells us, during past 30 years, Hip-Hop music was trying to fight couple major social injustice such as race discrimination, gold diggers, gender equality, etc.**
 <br>
-**The plot below indicates Eminem's words usages among two decades. As we can see, Eminem's words pick almost didn't change. Based on pure data analysis, Eminem doesn't change among time. However, Hip-Pop industry as a whole doesn't change as well. So, *Nope* for the NY times Journalist.**
+**The plot below indicates Eminem's words usages among two decades. As we can see, Eminem's words pick almost didn't change. Based on pure data analysis, Eminem doesn't change among time. However, Hip-Hop industry as a whole doesn't change as well. So, *Nope* for the NY times Journalist.**
 ```{r fig.align='center', warning=FALSE}
 timeless <- eminem %>% 
   mutate(decade = year - year%%10) %>% 
@@ -140,4 +140,6 @@ timeless %>%
   coord_flip()
 ```
 
+## Conclusion: The Limitation of Data Analysis
+**Through all the analysis above, I hope you've learned more about Eminem and the Hip-Hop industry as a whole. However, I hope you also see the limitation of data analysis. Apparently, Hip-Hop is a positive music, that's why people love it. However, based on our word frequency analysis, all Hip-Hop music is rude and about hateness. That's not true because data analysis cannot find the stories under the table or inside human's heart. Thus, when a NY times journalist says: Hip-Hop changes, Eminem doesn't. He means on a spirit level. However, we cannot see any word usage difference between Eminem and the whold Hip-Hop industry. As a result, there is still much fields that data analysis is not performing well. As data scientist/ statistician, we need know the limitation of Data Analysis. With this powerful tool, we should care more about human side, not data/ algorithm side.**
 
