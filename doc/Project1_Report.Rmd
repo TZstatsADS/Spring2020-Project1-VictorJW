@@ -1,18 +1,30 @@
 ---
-title: "Stories behind Eminem's lyrics"
+title: "Eminem: The Rap God"
 author: "Jiadong Wu"
 date: "2/2/2020"
 output: html_document
 ---
 
-## Eminem: The Rap God
-Hip-Hop Changes. Eminem Doesn't.
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Why Eminem?
+
+**"If ever there was a rapper who would fail to grow old gracefully, remaining juvenile and belligerent to the bitter end, we should've known it would be Eminem."** <br>
+                                                        $\hspace{420pt}$  **--Rodney CarMichael**
+<br>
+
+**Eminem is the man tha leads me to the Hip-Hop music when I was a kid. The first Hip-Hop song I've listened was his *without me*. However, I never pay close attention to his lyrics (You know he is a rapper). It is a great honor to get to know such a great artist as a kid from China. In this project, and with the lyrics dataset, I hope I can get to know Eminem more, what is he trying to express in all time?**
+
+<br>
 
 ```{r load libraries, include = FALSE}
 library(tidyverse)
 library(wordcloud2)
 library(tidytext)
 library(plotly)
+library(tm)
 ```
 
 ```{r load data, warning=FALSE, message=FALSE}
@@ -25,24 +37,33 @@ eminem <- dt_lyrics %>%
   filter(artist == 'eminem')
 ```
 
-## Prolific Producer
-```{r}
+## Why Eminem is So Popular? A Prolific Producer
+**Dispite Eminem's music sounds great, there must be another reason why his music keep in hot. I found that he is not only an excellent rapper but also a prolific Producer. As we can see on the plot blow, Eminem has an incredible creativity, the average song release is almost 40. With such a productivity, Eminem was able to keep popular all time. **
+
+<br>
+
+```{r fig.align='center'}
 g1 <- eminem %>% 
   group_by(year) %>% 
   summarise(num = n())
 
 g1 %>% 
   ggplot() +
-  geom_bar(aes(x = year, y = num),fill = 'orange', stat = 'identity') +
+  geom_bar(aes(x = year, y = num),fill = 'lightblue', stat = 'identity') +
   labs(x = 'Year',
        y = 'Number of Song Released',
        title = 'Song Release Analysis') +
-  theme_light() +
   theme(plot.title = element_text(hjust = 0.5)) 
 ```
 
-## Word Frequency
-```{r}
+## What Eminem trying to Express? Word Frequency Analysis
+**I am always curious that why rappers always use those rude words (You know it). However, in the other hand, they are talking about love, peace and respect. So I did an all-time word frequency analysis of Eminem to see which words he use the most.** 
+<br>
+**Unfortunately, Eminem is just like other rappers. The top three frequent words he uses are extremely rude. Why is that? Data analysis would no longer leads us to the truth. NPL and word frequency analysis are only capable to tell the story that just on the table. However, as a Hip-Hop fans, I could tell the reason. Most of rappers are from poor families, so does Eminem. A lot of Hip-Hop music is trying to reveal social injustice: race, gender, poverty, etc.** 
+<br>
+**Thus, rude words are attacking the social injustice, but Hip-Pop music is all about love and peace.**
+<br>
+```{r fig.align='center', warning=FALSE}
 word_alltime <- eminem %>% 
   mutate(token = str_split(stemmedwords, ' ')) %>% 
   unnest() %>% 
@@ -61,8 +82,60 @@ ggplot(word_alltime, aes(x=token, y=frequency, fill=token)) +
 
 ```
 
-## Word Cloud2
-```{r}
-wordcloud2(word_alltime, fontFamily = 'sans')
+## Eminem's Word Cloud 
+```{r wordcloud, fig.align='center', warning=FALSE}
+wordcloud2(word_alltime, color = 'random-light')
 ```
+
+## Hip-Pop Changes, Eminem Doesn't? Nope!
+**During this project, I did a couple of researches about Hip-Hop industry. I've also seen an article in NYtimes that said *Hip-Hop Changes, Eminem Doesn't.* This makes me a little bit curious that is it really true upon our word frequency analysis?**
+<br>
+**So I compared Eminem's words usage against the whole Hip-Hop industry words frequency by decades.**
+<br>
+
+```{r fig.align='center', warning=FALSE}
+timeless_hip <- dt_lyrics %>% 
+  filter(genre == 'Hip-Hop') %>% 
+  filter(year >= 1900) %>% 
+  mutate(decade = year - year%%10) %>% 
+  mutate(token = str_split(stemmedwords, ' ')) %>% 
+  unnest() %>% 
+  group_by(decade) %>% 
+  count(token, name = 'frequency', sort = TRUE) %>% 
+  slice(seq_len(8)) %>% 
+  ungroup() %>% 
+  arrange(decade, frequency) %>% 
+  mutate(row = row_number()) 
+
+timeless_hip %>% 
+  ggplot(aes(row, frequency, fill = decade)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~decade, scales = 'free') +
+  scale_x_continuous(breaks = timeless_hip$row, labels = timeless_hip$token) +
+  coord_flip() 
+```
+**As we can see on the above plots, Hip-Hop industry did experience a words usage shift from 1980's to 1990's. However, from 1990's up to now, the words that rappers frequently used are consistent which tells us, during past 30 years, Hip-Hop music was trying to fight couple major social injustice such as race discrimination, gold diggers, gender equality, etc.**
+<br>
+**The plot below indicates Eminem's words usages among two decades. As we can see, Eminem's words pick almost didn't change. Based on pure data analysis, Eminem doesn't change among time. However, Hip-Pop industry as a whole doesn't change as well. So, *Nope* for the NY times Journalist.**
+```{r fig.align='center', warning=FALSE}
+timeless <- eminem %>% 
+  mutate(decade = year - year%%10) %>% 
+  mutate(token = str_split(stemmedwords, ' ')) %>% 
+  unnest() %>% 
+  group_by(decade) %>% 
+  count(token, name = 'frequency', sort = TRUE) %>% 
+  slice(seq_len(8)) %>% 
+  ungroup() %>% 
+  arrange(decade, frequency) %>% 
+  mutate(row = row_number()) 
+
+
+timeless %>% 
+  ggplot(aes(row, frequency, fill = decade)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~decade, scales = 'free') +
+  scale_x_continuous(breaks = timeless$row, labels = timeless$token) +
+  coord_flip()
+```
+
 
