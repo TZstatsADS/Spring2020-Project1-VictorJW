@@ -1,8 +1,10 @@
 ---
-title: "Eminem: The Rap God"
+title: 'Eminem: The Rap God'
 author: "Jiadong Wu"
 date: "2/2/2020"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
